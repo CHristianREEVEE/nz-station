@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>南浊工作站 // NZ-STATION</title>
+<meta name="description" content="一个长在服务器上的个人情报终端：GitHub 热门 AI 项目、每天一条冷知识、一条 Python 技巧。">
+<style>
+:root{--bg:#0d1117;--card:rgba(22,27,34,.95);--bd:#30363d;--fg:#e6edf3;--dim:#8b949e;--grn:#3fb950;--blu:#58a6ff;--grnB:#238636}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);background-image:radial-gradient(circle,#161b2280 1px,transparent 1px);background-size:24px 24px;color:var(--fg);font-family:ui-monospace,'JetBrains Mono','Fira Code',Consolas,Menlo,monospace;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:20px;line-height:1.7}
+.term{width:100%;max-width:880px;background:var(--card);border:1px solid var(--bd);border-radius:10px;backdrop-filter:blur(8px);box-shadow:0 8px 40px rgba(0,0,0,.5);overflow:hidden;margin:auto}
+.tbar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--bd);font-size:12px;color:var(--dim)}
+.dot{width:12px;height:12px;border-radius:50%}
+.r{background:#ff5f56}.y{background:#ffbd2e}.g{background:#27c93f}
+.tbar span{margin-left:6px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tbody{padding:22px 26px 26px}
+.blink{display:inline-block;width:8px;height:15px;background:var(--grn);vertical-align:-2px;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.gate-title{font-size:clamp(22px,5vw,34px);color:var(--grn);margin:26px 0 10px;text-shadow:0 0 18px rgba(63,185,80,.4)}
+.gate-sub{color:var(--dim);font-size:13px;margin-bottom:28px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:30px}
+.tag{border:1px solid var(--bd);border-radius:20px;padding:3px 12px;font-size:12px;color:var(--blu)}
+.btn{display:inline-block;border:1px solid var(--grnB);color:var(--grn);background:rgba(35,134,54,.12);border-radius:6px;padding:10px 22px;font-size:14px;cursor:pointer;font-family:inherit;transition:.15s}
+.btn:hover{background:rgba(35,134,54,.3)}
+.btn.dim{border-color:var(--bd);color:var(--dim);background:transparent}
+.note{font-size:12px;color:var(--dim);margin-top:22px;max-width:560px}
+.note a{color:var(--blu);text-decoration:none;border-bottom:1px dashed var(--blu)}
+.hidden{display:none}
+.boot{font-size:13px;color:var(--dim);min-height:84px;margin-bottom:16px;white-space:pre-wrap}
+.boot .ok{color:var(--grn)}
+.boot .cmd{color:var(--fg)}
+.status{font-size:11px;color:var(--dim);padding:6px 0}
+.hd{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;margin:26px 0 8px}
+.hd h1{font-size:clamp(20px,4.5vw,30px);color:var(--grn);text-shadow:0 0 16px rgba(63,185,80,.35)}
+.clock{font-size:12px;color:var(--dim)}
+.slogan{color:var(--dim);font-size:13px;margin:8px 0 18px;max-width:640px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.badge{border:1px solid var(--bd);border-radius:4px;padding:2px 10px;font-size:11px;color:var(--dim)}
+.badge b{color:var(--grn);font-weight:normal}
+.mod{border:1px solid var(--bd);border-radius:8px;margin-top:26px;background:rgba(13,17,23,.55);overflow:hidden}
+.mod-hd{padding:10px 16px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
+.mod-path{color:var(--grn);font-size:13px}
+.mod-desc{font-size:11px;color:var(--dim);width:100%;margin-top:2px}
+.mod-bd{padding:14px 16px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.fbtn{border:1px solid var(--bd);background:transparent;color:var(--dim);border-radius:5px;padding:3px 12px;font-size:11px;cursor:pointer;font-family:inherit}
+.fbtn.on{border-color:var(--grnB);color:var(--grn);background:rgba(35,134,54,.15)}
+.updated{font-size:11px;color:var(--dim);margin-left:auto}
+.repo{display:flex;gap:14px;padding:12px 4px;border-bottom:1px solid rgba(48,54,61,.5)}
+.repo:last-child{border-bottom:none}
+.repo .no{color:var(--dim);font-size:13px;min-width:24px;padding-top:2px}
+.repo .m{flex:1;min-width:0}
+.repo .nm{font-size:14px;color:var(--blu);word-break:break-all}
+.repo .nm a{color:var(--blu);text-decoration:none}
+.repo .nm a:hover{text-decoration:underline}
+.repo .ds{font-size:12px;color:var(--dim);margin:3px 0}
+.repo .mt{font-size:11px;color:var(--dim)}
+.repo .mt .star{color:#e3b341}
+.repo .mt .lang{color:var(--grn)}
+.fact{font-size:15px;color:var(--fg);margin:6px 0 10px}
+.fact-src{font-size:11px;color:var(--dim)}
+.code{background:#0a0d12;border:1px solid var(--bd);border-radius:6px;padding:12px 14px;font-size:12.5px;overflow-x:auto;color:#a5d6a7;margin-top:8px;white-space:pre}
+.tip-t{font-size:14px;color:var(--grn)}
+.foot{margin-top:34px;padding-top:14px;border-top:1px solid var(--bd);font-size:11px;color:var(--dim);display:flex;flex-wrap:wrap;gap:6px 16px}
+.foot a{color:var(--blu);text-decoration:none;border-bottom:1px dashed var(--blu)}
+@media(max-width:560px){.tbody{padding:16px 14px 20px}.repo{gap:10px}}
+</style>
+</head>
+<body>
+<div class="term">
+  <div class="tbar"><i class="dot r"></i><i class="dot y"></i><i class="dot g"></i><span id="wintitle">nz-station — access gate</span></div>
+  <div class="tbody">
+
+  <div id="gate">
+    <div style="color:var(--dim);font-size:12px">nz-station — access gate</div>
+    <div class="gate-title">南浊工作站://NZ-STATION</div>
+    <div class="gate-sub">GitHub 热榜 · 每日冷知识 · Python 技巧</div>
+    <div class="tags"><span class="tag">github-trending</span><span class="tag">daily-fact</span><span class="tag">python-tip</span></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <button class="btn" id="btnGeo">定位签到并进入</button>
+      <button class="btn dim" id="btnSkip">直接进入（不签到）</button>
+    </div>
+    <div class="note">点「定位签到并进入」即表示你<b>单独同意</b>本站获取你的实时定位（GPS 坐标），用于访客足迹记录，仅站长后台可见。<b>拒绝授权也可以正常进入，不影响任何浏览。</b>不签到的访客仅记录城市级统计。<a href="privacy.html">查看《隐私政策》全文</a></div>
+  </div>
+
+  <div id="main" class="hidden">
+    <div class="boot" id="boot"></div>
+    <div class="status">SYSTEM ONLINE · <span id="clock">--:--:--</span></div>
+    <div class="hd"><h1>南浊工作站://NZ-STATION</h1></div>
+    <div class="slogan">一个长在服务器上的个人情报终端：追踪 GitHub 热门 AI 项目、每天一条冷知识、一条 Python 技巧。保持好奇，保持更新。</div>
+    <div class="badges"><span class="badge">模块 <b>3</b></span><span class="badge">数据 <b>REALTIME</b></span><span class="badge">许可 <b>MIT</b></span><span class="badge">自托管 <b>100%</b></span></div>
+
+    <div class="mod">
+      <div class="mod-hd"><div><div class="mod-path">~/modules/github-trending.sh</div><div class="mod-desc">GitHub 官方 API 实时拉取，按 Star 排序</div></div>
+        <div class="filters"><button class="fbtn on" data-r="week" id="fWeek">本周新建</button><button class="fbtn" data-r="month" id="fMonth">本月新建</button><button class="fbtn" id="fRefresh">刷新</button></div>
+        <div class="updated" id="upd">—</div>
+      </div>
+      <div class="mod-bd" id="repos"><div class="status">正在拉取 trending…</div></div>
+    </div>
+
+    <div class="mod">
+      <div class="mod-hd"><div><div class="mod-path">~/modules/daily-fact.sh</div><div class="mod-desc">每日轮换一条，点「换一条」可随机探索</div></div></div>
+      <div class="mod-bd">
+        <div class="fact" id="fact">…</div>
+        <div class="fact-src" id="factSrc">—</div>
+        <div style="margin-top:12px"><button class="btn dim" id="factBtn" style="padding:6px 16px;font-size:12px">换一条</button></div>
+      </div>
+    </div>
+
+    <div class="mod">
+      <div class="mod-hd"><div><div class="mod-path">~/modules/python-tip.py</div><div class="mod-desc">每天一个实用技巧，代码可直接复制运行</div></div></div>
+      <div class="mod-bd">
+        <div class="tip-t" id="tipTitle">…</div>
+        <div class="code" id="tipCode">…</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;flex-wrap:wrap;gap:8px">
+          <span class="fact-src" id="tipNo">—</span>
+          <div style="display:flex;gap:8px"><button class="btn dim" id="tipCopy" style="padding:6px 16px;font-size:12px">复制代码</button><button class="btn dim" id="tipBtn" style="padding:6px 16px;font-size:12px">换一条</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot"><span>© 2026 nz-station · <a href="privacy.html">隐私政策</a></span><span>本站记录访客城市用于统计 · <a href="admin.html">站长入口</a></span></div>
+  </div>
+
+  </div>
+</div>
+<script>
+/* ====== 配置（部署时注入）====== */
+var WBSYNC = 'https://wb.reeve10001.top/wbsync/api/';
+var WBSYNC_KEY = 'wb_';
+var AMAP_KEY = '';
+var LOG_FIELD = 'nz_visits';
+
+/* ====== 访问门 ====== */
+function enterStation(){ document.getElementById('gate').classList.add('hidden'); document.getElementById('main').classList.remove('hidden'); document.getElementById('wintitle').textContent = 'nz-station — bash — 80×24'; bootAnim(); startClock(); }
+document.getElementById('btnSkip').onclick = function(){ enterStation(); logVisit('skip', null); };
+document.getElementById('btnGeo').onclick = function(){
+  if (!navigator.geolocation) { enterStation(); logVisit('no-geo-api', null); return; }
+  navigator.geolocation.getCurrentPosition(function(pos){
+    enterStation();
+    logVisit('gate', { lat: pos.coords.latitude, lng: pos.coords.longitude, acc: Math.round(pos.coords.accuracy || 0) });
+  }, function(){ enterStation(); logVisit('denied', null); }, { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 });
+};
+
+/* ====== 访客落库（城市级统计 + 可选 GPS 签到）====== */
+function amapRegeo(lat, lng, cb){
+  if (!AMAP_KEY || AMAP_KEY.indexOf('__') === 0) return cb(null);
+  var s = document.createElement('script');
+  var cbName = 'nzregeo' + Date.now();
+  window[cbName] = function(r){ cb(r && r.regeocode && r.regeocode.addressComponent ? r.regeocode.addressComponent : null); try { delete window[cbName]; } catch (e) {} s.remove(); };
+  s.src = 'https://restapi.amap.com/v3/geocode/regeo?key=' + AMAP_KEY + '&location=' + lng + ',' + lat + '&callback=' + cbName;
+  s.onerror = function(){ cb(null); };
+  document.head.appendChild(s);
+}
+function logVisit(src, geo){
+  var rec = { t: new Date().toISOString().slice(0, 19).replace('T', ' '), src: src, ua: navigator.userAgent.slice(0, 120), ref: document.referrer.slice(0, 100) || 'direct', city: null };
+  var done = function(){ var o = {}; o[LOG_FIELD] = [rec]; fetch(WBSYNC + 'sync?k=' + WBSYNC_KEY, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(o) }).catch(function(){}); };
+  if (geo) {
+    rec.lat = geo.lat.toFixed(4); rec.lng = geo.lng.toFixed(4); rec.acc = geo.acc;
+    amapRegeo(geo.lat, geo.lng, function(ac){ if (ac) rec.city = (ac.province || '') + (ac.city || ac.province || '') + (ac.district || ''); done(); });
+  } else {
+    fetch('https://ipwho.is/').then(function(r){ return r.json(); }).then(function(d){ if (d && d.city) rec.city = d.city + ', ' + (d.country || ''); done(); }).catch(function(){ done(); });
+  }
+}
+
+/* ====== 开机动画 ====== */
+function bootAnim(){
+  var lines = [
+    { c: '$ ./boot.sh --modules=all', cls: 'cmd' },
+    { c: '[OK] github-trending  已挂载', cls: 'ok' },
+    { c: '[OK] daily-fact       已挂载', cls: 'ok' },
+    { c: '[OK] python-tip      已挂载', cls: 'ok' }
+  ];
+  var el = document.getElementById('boot'); el.innerHTML = ''; var i = 0;
+  function next(){ if (i >= lines.length) { var d = document.createElement('div'); d.className = 'cmd'; d.innerHTML = '$ <span class="blink"></span>'; el.appendChild(d); fetchTrending(); return; }
+    var d2 = document.createElement('div'); d2.className = lines[i].cls; d2.textContent = lines[i].c; el.appendChild(d2); i++; setTimeout(next, 260); }
+  next();
+}
+function startClock(){ setInterval(function(){ document.getElementById('clock').textContent = new Date().toLocaleTimeString('zh-CN', { hour12: false }); }, 1000); }
+
+/* ====== GitHub Trending ====== */
+var range = 'week';
+document.getElementById('fWeek').onclick = function(){ setRange('week'); };
+document.getElementById('fMonth').onclick = function(){ setRange('month'); };
+document.getElementById('fRefresh').onclick = function(){ fetchTrending(); };
+function setRange(r){ range = r; document.getElementById('fWeek').classList.toggle('on', r === 'week'); document.getElementById('fMonth').classList.toggle('on', r === 'month'); fetchTrending(); }
+function fmtStar(n){ return n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(n); }
+function renderRepos(items, cached){
+  var box = document.getElementById('repos');
+  if (!items || !items.length) { box.innerHTML = '<div class="status">暂无数据（GitHub API 限流或网络异常，稍后点「刷新」重试）</div>'; return; }
+  box.innerHTML = (cached ? '<div class="status" style="color:#e3b341">⚠ GitHub API 限流，显示本地缓存数据</div>' : '') + items.map(function(it, i){
+    return '<div class="repo"><div class="no">' + String(i + 1).padStart(2, '0') + '</div><div class="m">'
+      + '<div class="nm"><a href="' + it.html_url + '" target="_blank" rel="noopener">' + it.full_name + '</a></div>'
+      + '<div class="ds">' + (it.description || '（无描述）').slice(0, 90).replace(/</g, '&lt;') + '</div>'
+      + '<div class="mt"><span class="star">★ ' + fmtStar(it.stargazers_count) + '</span> · <span class="lang">' + (it.language || '—') + '</span> · forks ' + fmtStar(it.forks_count) + '</div></div></div>';
+  }).join('');
+}
+function fetchTrending(){
+  var days = range === 'week' ? 7 : 30;
+  var since = new Date(Date.now() - days * 86400000).toISOString().slice(0, 10);
+  document.getElementById('repos').innerHTML = '<div class="status">正在拉取 trending…</div>';
+  fetch('https://api.github.com/search/repositories?q=created:%3E' + since + '&sort=stars&order=desc&per_page=10')
+    .then(function(r){ if (!r.ok) throw new Error('rate'); return r.json(); })
+    .then(function(d){
+      var items = d.items || [];
+      renderRepos(items, false);
+      document.getElementById('upd').textContent = 'updated ' + new Date().toLocaleTimeString('zh-CN', { hour12: false });
+      try { localStorage.setItem('nz_trend', JSON.stringify({ d: items, ts: Date.now() })); } catch (e) {}
+    })
+    .catch(function(){
+      try { var c = JSON.parse(localStorage.getItem('nz_trend') || 'null'); if (c && c.d) { renderRepos(c.d, true); document.getElementById('upd').textContent = 'cached ' + new Date(c.ts).toLocaleTimeString('zh-CN', { hour12: false }); return; } } catch (e) {}
+      renderRepos(null, true);
+    });
+}
+
+/* ====== 冷知识 ====== */
+var FACTS = [
+  '世界上第一个计算机 bug 是一只真的飞蛾：1947 年它飞进了哈佛 Mark II 计算机。',
+  '光纤每秒能绕地球赤道七圈半——数据在玻璃里的速度约 20 万公里/秒。',
+  '第一个鼠标外壳是木头做的，1964 年恩格尔巴特亲手打磨。',
+  'Wi-Fi 的前身频段，本来是 FCC 1985 年给微波炉泄漏留的免授权余量。',
+  '世界上第一封垃圾邮件 1978 年就发出去了，推销 DEC 的新机器。',
+  '键盘 QWERTY 排布最初是为了让打字员慢一点，防机械卡键。',
+  '「debug」一词的流行，要归功于格蕾丝·霍普把那只飞蛾贴进了工作日志。',
+  'C 语言的雏形只用了两个星期：1972 年汤普逊和里奇决定给 PDP-11 重写系统。',
+  '1GB 硬盘在 1980 年重达 250 公斤，价格约 4 万美元。',
+  '二维码最初是为了跟踪丰田零件发明的（1994，Denso Wave），专利没收一分钱。',
+  '第一条手机短信 1992 年发出，内容是「Merry Christmas」。',
+  'Python 之名来自 Monty Python 剧团，不是蟒蛇——吉多想让文档有点幽默感。',
+  'HTTP 状态码 418「我是茶壶」是愚人节玩笑，1998 年定进 RFC，至今没人敢删。',
+  '世界上第一位程序员是 Ada Lovelace（1815-1852），她给分析机写的注记是最早的程序。',
+  '第一台 IBM PC 的采购清单里，键盘比主板贵。'
+];
+var factIdx = Math.floor(Date.now() / 86400000) % FACTS.length;
+function showFact(i){ var k = ((i % FACTS.length) + FACTS.length) % FACTS.length; document.getElementById('fact').textContent = FACTS[k]; document.getElementById('factSrc').textContent = ' fact #' + String(k + 1).padStart(2, '0') + ' / ' + FACTS.length + ' · ' + new Date().toLocaleDateString('zh-CN'); }
+document.getElementById('factBtn').onclick = function(){ factIdx = Math.floor(Math.random() * FACTS.length); showFact(factIdx); };
+showFact(factIdx);
+
+/* ====== Python 技巧 ====== */
+var TIPS = [
+  { t: 'zip：两个列表并行遍历', c: 'names  = ["甲", "乙", "丙"]\nscores = [90, 85, 88]\n\nfor name, score in zip(names, scores):\n    print(name, score)' },
+  { t: 'enumerate：带序号遍历', c: 'for i, name in enumerate(["甲", "乙", "丙"], start=1):\n    print(f"{i}. {name}")' },
+  { t: '解包：一行交换两个变量', c: 'a, b = 1, 2\na, b = b, a  # 现在 a=2, b=1' },
+  { t: 'f-string：格式化还能算表达式', c: 'price = 19.999\nprint(f"总价：{price:.2f} 元")   # 总价：20.00 元\nprint(f"翻倍：{price * 2:.1f}")  # 翻倍：40.0' },
+  { t: 'dict.get：取值带默认，不炸 KeyError', c: 'config = {"host": "localhost"}\nport = config.get("port", 8080)  # 不存在就取 8080' },
+  { t: '列表推导式：一行代替 for 循环', c: 'squares = [x * x for x in range(10) if x % 2 == 0]\n# [0, 4, 16, 36, 64]' },
+  { t: 'set：一行去重', c: 'ids = [3, 1, 3, 2, 1, 5]\nunique = list(set(ids))                # 顺序不保证\nunique_ordered = list(dict.fromkeys(ids))  # 保序去重' },
+  { t: 'any / all：存在性与全称判断', c: 'nums = [3, 7, 0, 5]\nany_zero = any(n == 0 for n in nums)  # True\nall_pos  = all(n > 0 for n in nums)   # False' },
+  { t: 'sorted 的 key：按任意字段排序', c: 'users = [{"name": "甲", "age": 31}, {"name": "乙", "age": 25}]\nby_age = sorted(users, key=lambda u: u["age"])' },
+  { t: 'collections.Counter：数出现次数', c: 'from collections import Counter\n\nwords = "苹果 香蕉 苹果 梨 苹果".split()\nprint(Counter(words).most_common(1))  # [("苹果", 3)]' },
+  { t: '切片：步长取间隔元素', c: 'nums = list(range(10))\nnums[::2]   # [0, 2, 4, 6, 8] 隔一个取一个\nnums[::-1]  # 倒序' },
+  { t: 'join：把列表拼成字符串', c: 'parts = ["2026", "10", "01"]\nprint("-".join(parts))  # 2026-10-01' },
+  { t: '三元表达式：一行 if-else', c: 'age = 20\nstatus = "成年" if age >= 18 else "未成年"' },
+  { t: 'dict.setdefault：初始化嵌套结构', c: 'groups = {}\nfor word in "苹果 梨 苹果".split():\n    groups.setdefault(len(word), []).append(word)' },
+  { t: '字符串反转的两种姿势', c: 's = "NZ-STATION"\nprint(s[::-1])           # 切片\nprint("".join(reversed(s)))  # 迭代器' }
+];
+var tipIdx = Math.floor(Date.now() / 86400000) % TIPS.length;
+function showTip(i){ var k = ((i % TIPS.length) + TIPS.length) % TIPS.length; document.getElementById('tipTitle').textContent = TIPS[k].t; document.getElementById('tipCode').textContent = TIPS[k].c; document.getElementById('tipNo').textContent = ' tip #' + String(k + 1).padStart(2, '0') + ' / ' + TIPS.length + ' · ' + new Date().toLocaleDateString('zh-CN'); }
+document.getElementById('tipBtn').onclick = function(){ tipIdx++; showTip(tipIdx); };
+document.getElementById('tipCopy').onclick = function(){ var code = document.getElementById('tipCode').textContent; var b = document.getElementById('tipCopy'); if (navigator.clipboard) navigator.clipboard.writeText(code).then(function(){ b.textContent = '✓ 已复制'; setTimeout(function(){ b.textContent = '复制代码'; }, 1200); }); else { b.textContent = '此浏览器不支持'; setTimeout(function(){ b.textContent = '复制代码'; }, 1200); } };
+showTip(tipIdx);
+</script>
+</body>
+</html>
